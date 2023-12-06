@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ndn-node2
+spec:
+  selector:
+    app: ndn-node2
+  ports:
+    - port: 6363
+      targetPort: 6363
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ndn-node2
+  labels:
+    app: ndn-node2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ndn-node2
+  template:
+    metadata:
+      labels:
+        app: ndn-node2
+    spec:
+      containers:
+        - name: ndn-node2
+          image: hydrokhoos/ndn-all:arm
+          tty: true
+          env:
+            - name: NEIGHBORS
+              value: "ndn-node1 ndn-node3"
+          ports:
+            - containerPort: 6363
+          securityContext:
+            privileged: true
